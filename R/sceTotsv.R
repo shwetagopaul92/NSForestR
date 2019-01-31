@@ -2,8 +2,8 @@
 #' @param sce SingleCellExperiment object
 #' @param destination character filepath to tsv
 #' @examples 
-#' require(pcmp)
-#' data(Ab10k)
+#' requireNamespace("pcmp")
+#' data(pcmp::Ab10k)
 #' tf = tempfile(fileext=".tsv")
 #' sceTotsv(Ab10k,tf)
 #' head(read.delim(tf,sep="\t"))
