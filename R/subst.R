@@ -4,7 +4,6 @@
 doSubs = function(tsvname, clustVblName="Clusters",
                   numtrees=100, numthread=1, num_inf_genes = 5,
                   num_top_ranked = 3) {
-  #
   # grab template file
   templ = readLines(system.file("python/NSforestTemplate.py", package="NSForestR"))
   prog = gsub("%%TSVNAME%%", tsvname, templ)
@@ -26,21 +25,15 @@ doSubs = function(tsvname, clustVblName="Clusters",
 
 #'run doSubs to generate python program and source
 #'from reticulate
+#'@param tsvfile character filename
 #'@export
 runNSForest <- function(){
-  writeLines(doSubs("Ab10k.tsv"), "temp/NSForestprogram.py")
+  writeLines(doSubs(), "temp/NSForestprogram.py")
   setwd("temp")
   source_python("NSForestprogram.py")
   output_csv = list.files(pattern="*.csv")
   myfiles = lapply(output_csv, read.delim)
 }
 
-#readFiles <- function(){
- # f1 <- read.delim(file='temp/Binary_scores_Supplmental_results.csv')
-#  f2 <- read.delim(file='temp/NS-Forest_v2_results.csv')
-#  f3 <- read.delim(file='temp/NSForest_v2_topResults.csv')
-#  f4 <- read.delim(file='temp/Function_medianValues.csv')
-#  f5 <- read.delim(file='temp/NSForest_v2_maxF-scores.csv')
-#}
 
 # version 2 -- minimize the use of files

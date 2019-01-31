@@ -5,7 +5,10 @@
 \title{run doSubs to generate python program and source
 from reticulate}
 \usage{
-runNSForest()
+runNSForest(tsvfile)
+}
+\arguments{
+\item{tsvfile}{character filename}
 }
 \description{
 run doSubs to generate python program and source

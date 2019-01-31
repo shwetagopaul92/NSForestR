@@ -8,6 +8,8 @@ sceTotsv(sce, destination)
 }
 \arguments{
 \item{sce}{SingleCellExperiment object}
+
+\item{destination}{character filepath to tsv}
 }
 \description{
 transform sce to tsv file
@@ -15,5 +17,7 @@ transform sce to tsv file
 \examples{
 require(pcmp)
 data(Ab10k)
-sceTotsv(Ab10k,"temp/Ab10k.tsv")
+tf = tempfile(fileext=".tsv")
+sceTotsv(Ab10k,tf)
+head(read.delim(tf,sep="\\t"))
 }
