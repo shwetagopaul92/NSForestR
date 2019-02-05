@@ -1,10 +1,10 @@
 Package: NSForestR
 Title: NSforest in R (via reticulate+python by Aevermann/Scheuermann et al.)
 Description: code.
-Version: 0.0.21
+Version: 0.0.4
 Author: Shweta Gopaulakrishnan
-Suggests: knitr
-Depends: reticulate, pcmp
+Suggests: knitr, pcmp
+Depends: reticulate
 Maintainer: Shweta Gopaulakrishnan <reshg@channing.harvard.edu>
 License: Artistic-2.0
 LazyLoad: yes
@@ -12,3 +12,4 @@ biocViews: SingleCell
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
 Encoding: UTF-8
+ 
