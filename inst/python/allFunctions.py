@@ -13,11 +13,6 @@ from sklearn import tree
 from sklearn.metrics import fbeta_score
 from sklearn.metrics import accuracy_score
 
-#Core analysis
-rankedDict =  {}  ###gives us the top ten features from RF
-f1_store_1D = {}
-Binary_score_store_DF=pd.DataFrame()
-DT_cutoffs_store={}
 
 #Function list
 
@@ -30,8 +25,9 @@ def randomForest(column, dataDummy,PrecolNum,rfTrees,threads):
     Ranked_Features=sorted(zip(map(lambda x: round(x, 4), rf.feature_importances_), names),reverse=True)
     return Ranked_Features
 
-def rankInformative(Ranked_Features):
+def rankInformative(column,Ranked_Features):
     RankedList = []
+    rankedDict = {}
     midcounter = 0
     for x in Ranked_Features:
         midcounter +=1
@@ -54,11 +50,18 @@ def negativeOut(x, column, medianValues,Median_Expression_Level):
             print "Is Right Out!"
     return Positive_RankedList_Complete
 
-def binaryScore(Positive_RankedList_Complete, informativeGenes, medianValues, column):
+def binaryScore(Binary_store_DF,Genes_to_testing,Ranked_Features,Positive_RankedList_Complete, InformativeGenes, medianValues, column):
     Positive_RankedList=list(Positive_RankedList_Complete[0:InformativeGenes])
     Median_RF_Subset=medianValues.loc[:, Positive_RankedList]
     Rescaled_Matrix=pd.DataFrame()
-
+    dataFull = pd.read_table("Ab10k.tsv",index_col = 0)
+    dataDummy = pd.get_dummies(dataFull, columns=["Clusters"], prefix = "", prefix_sep = "")
+    PrecolNum = len(dataFull.columns)
+    PostcolNum = len(dataDummy.columns)
+    clusters2Loop=PostcolNum-PrecolNum
+    f1_store_1D = {}
+    Binary_score_store_DF=pd.DataFrame()
+    DT_cutoffs_store={}
     for i in Positive_RankedList:
         Target_value=medianValues.loc[column, i]
         Rescaled_values=Median_RF_Subset[[i]].divide(Target_value)
@@ -73,16 +76,19 @@ def binaryScore(Positive_RankedList_Complete, informativeGenes, medianValues, co
     Ranked_Features_df.rename(columns={1: 'Symbol'}, inplace=True)
     Ranked_Features_df_indexed=Ranked_Features_df.set_index("Symbol")
     rescaled_df=pd.DataFrame(rescaled)
+    #global Binary_store_DF
     binaryAndinformation_Ranks=rescaled_df.join(Ranked_Features_df_indexed,lsuffix='_scaled', rsuffix='_informationGain')
     binaryAndinformation_Ranks.sort_values(by=['0_scaled','0_informationGain'],ascending= [False, False], inplace = True)
     Binary_ranked_Genes=binaryAndinformation_Ranks.index.tolist()
     Binary_RankedList=list(Binary_ranked_Genes[0:Genes_to_testing])
     Binary_scores=rescaled.to_dict()
-    global Binary_store_DF
-    Binary_store_DF = Binary_store_DF.append(binaryAndinformation_Ranks)
+    Binary_store_DF=Binary_store_DF.append(binaryAndinformation_Ranks)
     return Binary_RankedList
 
 def DT_cutOffs(x, column):
+    dataFull = pd.read_table("Ab10k.tsv",index_col = 0)
+    dataDummy = pd.get_dummies(dataFull, columns=["Clusters"], prefix = "", prefix_sep = "")
+    DT_cutoffs_store={}
     cut_dict = {}
     for i in x:
         filename=str(i)
@@ -114,6 +120,8 @@ def permutor(x):
 
 def fbetaTest(x, column,testArray, betaValue):
     fbeta_dict = {}
+    dataFull = pd.read_table("Ab10k.tsv",index_col = 0)
+    dataDummy = pd.get_dummies(dataFull, columns=["Clusters"], prefix = "", prefix_sep = "")
     for list in x:
         testArray['y_pred']= 0
         betaQuery = '&'.join(list)

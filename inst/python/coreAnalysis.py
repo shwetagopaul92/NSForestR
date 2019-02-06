@@ -14,23 +14,32 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
 from sklearn.metrics import fbeta_score
 from sklearn.metrics import accuracy_score
-from allFunctions import randomForest
-from allFunctions import rankInformative
-from allFunctions import negativeOut
-from allFunctions import binaryScore
-from allFunctions import DT_cutOffs
-from allFunctions import queryGenerator
-from allFunctions import permutor
-from allFunctions import fbetaTest
+from allFunctions import *
 
+def runNSForest(rfTrees, threads, Median_Expression_Level, InformativeGenes, Genes_to_testing, betaValue):
+    dataFull = pd.read_table("Ab10k.tsv",index_col = 0)
+    #Creates dummy columns for one vs all Random Forest modeling
+    dataDummy = pd.get_dummies(dataFull, columns=["Clusters"], prefix = "", prefix_sep = "")
 
-def runNSForest(rfTrees, threads, Median_Expression_Level, InformativeGenes, Genes_to_testing,betaValue):
+    #Creates matrix of cluster median expression values
+    medianValues = dataFull.groupby(by="Clusters").median()
+    medianValues.to_csv('Function_medianValues.csv')
 
+    #Finding the number of clusters and printing that to screen (sanity check)
+    PrecolNum = len(dataFull.columns)
+    PostcolNum = len(dataDummy.columns)
+    adjustedColumns = PrecolNum-1
+    clusters2Loop=PostcolNum-PrecolNum
+    #Core analysis
+    #rankedDict =  {}  ###gives us the top ten features from RF
+    f1_store_1D = {}
+    Binary_score_store_DF=pd.DataFrame()
+    DT_cutoffs_store={}
     for column in dataDummy.columns[PrecolNum-1:PostcolNum]:
 
             ## Run Random Forest and get a ranked list
             Ranked_Features= randomForest(column, dataDummy, PrecolNum, rfTrees, threads)
-            RankedList = rankInformative(Ranked_Features)
+            RankedList = rankInformative(column, Ranked_Features)
 
             ## Setup testArray for f-beta evaluation
             testArray = dataDummy[[column]]
@@ -39,7 +48,7 @@ def runNSForest(rfTrees, threads, Median_Expression_Level, InformativeGenes, Gen
             #Rerank according to expression level and binary score
             Positive_RankedList_Complete = negativeOut(RankedList, column, medianValues, Median_Expression_Level)
             Binary_store_DF = pd.DataFrame()
-            Binary_RankedList = binaryScore(Positive_RankedList_Complete, InformativeGenes, medianValues, column)
+            Binary_RankedList = binaryScore(Binary_store_DF,Genes_to_testing,Ranked_Features,Positive_RankedList_Complete, InformativeGenes, medianValues, column)
 
             Binary_score_store_DF_extra = Binary_store_DF.assign(clusterName = column)
             #print Binary_score_store_DF_extra
@@ -100,48 +109,19 @@ def runNSForest(rfTrees, threads, Median_Expression_Level, InformativeGenes, Gen
     NSForest_Results_Table_top = NSForest_Results_Table_Fin[topResults]
     NSForest_Results_Table_top.to_csv('NSForest_v2_topResults.csv')
 
-#Pass parameters
-parser = argparse.ArgumentParser(description='You can add a description here')
-#parser.add_argument('-file',type=argparse.FileType('r'),help='filename')
-parser.add_argument('-rfTrees',type=int,help='rfTrees number')
-parser.add_argument('-threads',type=int,help='number of threads')
-parser.add_argument('-Median_Expression_Level',type=int,help='Median_Expression_Level')
-parser.add_argument('-InformativeGenes',type=int,help='InformativeGenes')
-parser.add_argument('-Genes_to_testing',type=int,help='Genes_to_testing')
-args = parser.parse_args()
+def main():
+    #Pass parameters
+    parser = argparse.ArgumentParser(description='You can add a description here')
+    #parser.add_argument('-file',type=argparse.FileType('r'),help='filename')
+    parser.add_argument('-rfTrees',type=int,help='rfTrees number')
+    parser.add_argument('-threads',type=int,help='number of threads')
+    parser.add_argument('-Median_Expression_Level',type=int,help='Median_Expression_Level')
+    parser.add_argument('-InformativeGenes',type=int,help='InformativeGenes')
+    parser.add_argument('-Genes_to_testing',type=int,help='Genes_to_testing')
+    args = parser.parse_args()
+    print args.threads
+    runNSForest(args.rfTrees, args.threads, args.Median_Expression_Level, args.InformativeGenes, args.Genes_to_testing, betaValue=0.5)
 
-print args.threads
 
-dataFull = pd.read_table("Ab10k.tsv",index_col = 0)
-#Creates dummy columns for one vs all Random Forest modeling
-dataDummy = pd.get_dummies(dataFull, columns=["Clusters"], prefix = "", prefix_sep = "")
-
-#Creates matrix of cluster median expression values
-medianValues = dataFull.groupby(by="Clusters").median()
-medianValues.to_csv('Function_medianValues.csv')
-
-#Finding the number of clusters and printing that to screen (sanity check)
-PrecolNum = len(dataFull.columns)
-PostcolNum = len(dataDummy.columns)
-adjustedColumns = PrecolNum-1
-clusters2Loop=PostcolNum-PrecolNum
-
-#Core analysis 
-rankedDict =  {}  ###gives us the top ten features from RF
-f1_store_1D = {}
-Binary_score_store_DF=pd.DataFrame()
-DT_cutoffs_store={}
-
-####Random Forest parameters
-#rfTrees=6 #Number of trees
-#threads=1     #Number of threads to use, -1 is the greedy option where it will take all available CPUs/RAM
-
-####Filtering and ranking of genes from random forest parameters
-
-#InformativeGenes = 5 #How many top genes from the Random Forest ranked features will be evaluated for binariness
-#Genes_to_testing = 6    #How many top genes ranked by binary score will be evaluated in permutations by fbeta-score (as the number increases the number of permutation rises exponentially!)
-
-#### fbeta-score parameters
-#Set values for fbeta weighting. 1 is default f-measure. close to zero is Precision, greater than 1 weights toward Recall
-
-runNSForest(args.rfTrees, args.threads, args.Median_Expression_Level, args.InformativeGenes, args.Genes_to_testing,betaValue=0.5)
+if __name__== "__main__":
+  main()
