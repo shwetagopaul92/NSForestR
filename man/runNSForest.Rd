@@ -2,15 +2,35 @@
 % Please edit documentation in R/subst.R
 \name{runNSForest}
 \alias{runNSForest}
-\title{run doSubs to generate python program and source
-from reticulate}
+\title{run NSForest python code on data emitted by this function, and collect the results
+use source_python from reticulate in this version}
 \usage{
-runNSForest(tsvfile)
+runNSForest(sce, clustVblName = "Clusters", numtrees = 100,
+  numthread = 1, num_inf_genes = 5, num_top_ranked = 3)
 }
 \arguments{
-\item{tsvfile}{character filename}
+\item{sce}{instance of SingleCellExperiment}
+
+\item{clustVblName}{character(1) component of colData(sce) to use for cluster label}
+
+\item{numtrees}{numeric(1) number of trees built in random forest step}
+
+\item{numthread}{numeric(1) number of threads for python execution}
+
+\item{num_inf_genes}{numeric(1) number of genes to regard as informative for each cluster}
+
+\item{num_top_ranked}{numeric(1) number of genes to retain in reporting}
 }
 \description{
-run doSubs to generate python program and source
-from reticulate
+run NSForest python code on data emitted by this function, and collect the results
+use source_python from reticulate in this version
+}
+\examples{
+requireNamespace("pcmp") # from github vjcitn/pcmp
+sce = pcmp::sce300xx
+sce$Clusters = as.numeric(sce$PIMMquart) # grouped by percent reads aligned to introns
+sds = matrixStats::rowSds(assay(sce))
+ok = which(sds > quantile(sds, .95))
+r1 = runNSForest(sce[ok,], num_inf_genes=8, num_top_ranked=5)
+str(r1)
 }

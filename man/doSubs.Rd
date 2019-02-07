@@ -4,11 +4,11 @@
 \alias{doSubs}
 \title{transform fixed template into program using user parameter settings}
 \usage{
-doSubs(tsvname, clustVblName = "Clusters", numtrees = 100,
+doSubs(assaytsv, clustVblName = "Clusters", numtrees = 100,
   numthread = 1, num_inf_genes = 5, num_top_ranked = 3)
 }
 \arguments{
-\item{tsvname}{character(1)}
+\item{assaytsv}{character(1) arbitrary name used for image of assay data in a tsv format as assumed by the NSforest python code}
 }
 \description{
 transform fixed template into program using user parameter settings
