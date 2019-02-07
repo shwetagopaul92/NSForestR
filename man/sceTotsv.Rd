@@ -4,19 +4,21 @@
 \alias{sceTotsv}
 \title{transform sce to tsv file}
 \usage{
-sceTotsv(sce, destination)
+sceTotsv(sce, destination, clustvbl)
 }
 \arguments{
 \item{sce}{SingleCellExperiment object}
 
 \item{destination}{character filepath to tsv}
+
+\item{clustvbl}{character(1) variable in colData to use as cluster label}
 }
 \description{
 transform sce to tsv file
 }
 \examples{
-require(pcmp)
-data(Ab10k)
+requireNamespace("pcmp")
+data(pcmp::Ab10k)
 tf = tempfile(fileext=".tsv")
 sceTotsv(Ab10k,tf)
 head(read.delim(tf,sep="\\t"))
