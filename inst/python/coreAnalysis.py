@@ -16,8 +16,8 @@ from sklearn.metrics import fbeta_score
 from sklearn.metrics import accuracy_score
 from allFunctions import *
 
-def runNSForest(rfTrees, threads, Median_Expression_Level, InformativeGenes, Genes_to_testing, betaValue):
-    dataFull = pd.read_table("Ab10k.tsv",index_col = 0)
+def runNSForest(tsvfile, rfTrees, threads, Median_Expression_Level, InformativeGenes, Genes_to_testing, betaValue):
+    dataFull = pd.read_table(tsvfile,index_col = 0)
     #Creates dummy columns for one vs all Random Forest modeling
     dataDummy = pd.get_dummies(dataFull, columns=["Clusters"], prefix = "", prefix_sep = "")
 
@@ -48,7 +48,7 @@ def runNSForest(rfTrees, threads, Median_Expression_Level, InformativeGenes, Gen
             #Rerank according to expression level and binary score
             Positive_RankedList_Complete = negativeOut(RankedList, column, medianValues, Median_Expression_Level)
             Binary_store_DF = pd.DataFrame()
-            Binary_RankedList = binaryScore(Binary_store_DF,Genes_to_testing,Ranked_Features,Positive_RankedList_Complete, InformativeGenes, medianValues, column)
+            Binary_RankedList = binaryScore(tsvfile, Binary_store_DF,Genes_to_testing,Ranked_Features,Positive_RankedList_Complete, InformativeGenes, medianValues, column)
 
             Binary_score_store_DF_extra = Binary_store_DF.assign(clusterName = column)
             #print Binary_score_store_DF_extra
@@ -56,14 +56,14 @@ def runNSForest(rfTrees, threads, Median_Expression_Level, InformativeGenes, Gen
 
 
             #Get expression cutoffs for f-beta testing
-            cut_dict = DT_cutOffs(Binary_RankedList,column)
+            cut_dict = DT_cutOffs(tsvfile, Binary_RankedList,column)
             DT_cutoffs_store[column]=cut_dict
 
             #Generate expression queries and run those queries using fbetaTest() function
             queryInequalities=queryGenerator(Binary_RankedList, cut_dict)
             FullpermutationList = permutor(queryInequalities)
             #print len(FullpermutationList)
-            f1_store = fbetaTest(FullpermutationList, column, testArray, betaValue)
+            f1_store = fbetaTest(tsvfile, FullpermutationList, column, testArray, betaValue)
             f1_store_1D.update(f1_store)
 
 
@@ -112,7 +112,7 @@ def runNSForest(rfTrees, threads, Median_Expression_Level, InformativeGenes, Gen
 def main():
     #Pass parameters
     parser = argparse.ArgumentParser(description='You can add a description here')
-    #parser.add_argument('-file',type=argparse.FileType('r'),help='filename')
+    parser.add_argument('-fileName',type=str,help='filename')
     parser.add_argument('-rfTrees',type=int,help='rfTrees number')
     parser.add_argument('-threads',type=int,help='number of threads')
     parser.add_argument('-Median_Expression_Level',type=int,help='Median_Expression_Level')
@@ -120,7 +120,7 @@ def main():
     parser.add_argument('-Genes_to_testing',type=int,help='Genes_to_testing')
     args = parser.parse_args()
     print args.threads
-    runNSForest(args.rfTrees, args.threads, args.Median_Expression_Level, args.InformativeGenes, args.Genes_to_testing, betaValue=0.5)
+    runNSForest(args.fileName,args.rfTrees, args.threads, args.Median_Expression_Level, args.InformativeGenes, args.Genes_to_testing, betaValue=0.5)
 
 
 if __name__== "__main__":

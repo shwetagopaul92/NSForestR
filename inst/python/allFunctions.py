@@ -50,11 +50,11 @@ def negativeOut(x, column, medianValues,Median_Expression_Level):
             print "Is Right Out!"
     return Positive_RankedList_Complete
 
-def binaryScore(Binary_store_DF,Genes_to_testing,Ranked_Features,Positive_RankedList_Complete, InformativeGenes, medianValues, column):
+def binaryScore(tsvfile,Binary_store_DF,Genes_to_testing,Ranked_Features,Positive_RankedList_Complete, InformativeGenes, medianValues, column):
     Positive_RankedList=list(Positive_RankedList_Complete[0:InformativeGenes])
     Median_RF_Subset=medianValues.loc[:, Positive_RankedList]
     Rescaled_Matrix=pd.DataFrame()
-    dataFull = pd.read_table("Ab10k.tsv",index_col = 0)
+    dataFull = pd.read_table(tsvfile,index_col = 0)
     dataDummy = pd.get_dummies(dataFull, columns=["Clusters"], prefix = "", prefix_sep = "")
     PrecolNum = len(dataFull.columns)
     PostcolNum = len(dataDummy.columns)
@@ -85,8 +85,8 @@ def binaryScore(Binary_store_DF,Genes_to_testing,Ranked_Features,Positive_Ranked
     Binary_store_DF=Binary_store_DF.append(binaryAndinformation_Ranks)
     return Binary_RankedList
 
-def DT_cutOffs(x, column):
-    dataFull = pd.read_table("Ab10k.tsv",index_col = 0)
+def DT_cutOffs(tsvfile, x, column):
+    dataFull = pd.read_table(tsvfile,index_col = 0)
     dataDummy = pd.get_dummies(dataFull, columns=["Clusters"], prefix = "", prefix_sep = "")
     DT_cutoffs_store={}
     cut_dict = {}
@@ -118,9 +118,9 @@ def permutor(x):
         combs.extend(els)
     return combs
 
-def fbetaTest(x, column,testArray, betaValue):
+def fbetaTest(tsvfile, x, column,testArray, betaValue):
     fbeta_dict = {}
-    dataFull = pd.read_table("Ab10k.tsv",index_col = 0)
+    dataFull = pd.read_table(tsvfile,index_col = 0)
     dataDummy = pd.get_dummies(dataFull, columns=["Clusters"], prefix = "", prefix_sep = "")
     for list in x:
         testArray['y_pred']= 0

@@ -3,4 +3,5 @@
 export(doSubs)
 export(impMod)
 export(runNSForest)
+export(runNSFromPython)
 export(sceTotsv)
