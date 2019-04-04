@@ -144,7 +144,24 @@ fBetaTest<-function(predDF, clusterNum, betaValue,maxSymbol){
 #'@export
 runTest<-function(){
   require(matrixStats)
-  params = setParameters()
+  #params = setParameters()
+  file = system.file("python/Ab10k.tsv", package="NSForestR")
+  dataFull = read.csv(file, sep="\t",header=TRUE,row.names=1)
+  cind=which(names(dataFull)=="Clusters")
+  #Creates dummy columns for one vs all Random Forest modeling
+  mylev1=levels(dataFull$Clusters)[1]
+  haslev1=as.numeric(as.character(dataFull$Clusters)==mylev1)
+  dataDummy = cbind(haslev1,model.matrix(~Clusters, data=dataFull)[,-1])
+  colnames(dataDummy)=as.character(levels(dataFull$Clusters))
+  #Creates matrix of cluster median expression values
+  splitdat=split(dataFull,dataFull$Clusters)
+  mymeds=lapply(splitdat,function(x){colMedians(as.matrix(x[,-cind]))})
+  mynames=names(mymeds)
+  mymeds=do.call("rbind",mymeds)
+  medianValues=data.frame(mymeds)
+  names(medianValues)=names(dataFull)[-cind]
+  medianValues$cluster=mynames
+  write.csv(medianValues, file='Function_medianValues.csv')
   res=runRandomForest(2, dataFull, dataDummy, 100, cind)
   binres=binaryScore(res,5, medianValues,2,8)
   cuts=dtCutoff(binres,2, dataDummy, dataFull)

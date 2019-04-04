@@ -1,8 +1,8 @@
 Package: NSForestR
 Title: NSforest in R (via reticulate+python by Aevermann/Scheuermann et al.)
 Description: code.
-Version: 0.0.6
-Author: Shweta Gopaulakrishnan
+Version: 0.0.7
+Author: BJ Stubbs, Shweta Gopaulakrishnan
 Suggests: knitr, pcmp
 Depends: reticulate
 Maintainer: Shweta Gopaulakrishnan <reshg@channing.harvard.edu>

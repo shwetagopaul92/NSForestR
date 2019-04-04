@@ -1,0 +1,33 @@
+---
+title: "NSForestR"
+author: "Shweta Gopaulakrishnan"
+date: "4/4/2019"
+output: html_document
+---
+
+# NSforest in R (via reticulate+python by Aevermann/Scheuermann et al.)
+
+- Our package NSForestR helps work with NS Forest implementation in R. 
+- We have developed few methods to do this: 
+
+#NSforestR demo native R version of
+#https://github.com/JCVenterInstitute/NSForest
+
+```{r code2}
+result = runTest()
+```
+
+To run NS Forest program from python in R using 
+```{r code}
+r1 = runNSFromPython(Ab10k)
+r1
+```
+
+# Additional Methods 
+
+To transform a Single Cell Experiment object to tsv file : 
+
+```{r example}
+example("sceTotsv")
+```
+
