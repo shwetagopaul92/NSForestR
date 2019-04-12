@@ -4,30 +4,29 @@
 \alias{runNSFromPython}
 \title{to run NS Forest program from python}
 \usage{
-runNSFromPython(sce, numtrees = 100, numthread = 1,
-  expressionLevel = 0, num_inf_genes = 5, num_top_ranked = 3,
-  beta_value = 0.5)
+runNSFromPython(tsvfile, rfTrees, threads, Median_Expression_Level,
+  InformativeGenes, Genes_to_testing, betaValue)
 }
 \arguments{
-\item{sce}{instance of SingleCellExperiment}
+\item{tsvfile}{}
 
-\item{numtrees}{numeric(1) number of trees built in random forest step}
+\item{rfTrees}{numeric(1) number of trees built in random forest step}
 
-\item{numthread}{numeric(1) number of threads for python execution}
+\item{threads}{numeric(1) number of threads for python execution}
 
-\item{expressionLevel}{numeric(1) median expression level}
+\item{Median_Expression_Level}{numeric(1) median expression level}
 
-\item{num_inf_genes}{numeric(1) number of genes to regard as informative for each cluster}
+\item{InformativeGenes}{numeric(1) number of genes to regard as informative for each cluster}
 
-\item{num_top_ranked}{numeric(1) number of genes to retain in reporting}
+\item{Genes_to_testing}{numeric(1) number of genes to retain in reporting}
 
-\item{beta_value}{numeric(1) set values for fbeta weighting}
+\item{betaValue}{numeric(1) set values for fbeta weighting}
 }
 \description{
 to run NS Forest program from python
 }
 \examples{
-require("pcmp")
-data(Ab10k)
-r1 = runNSFromPython(Ab10k) # running with default parameters
+tsvfile = system.file("data/Ab10k.tsv", package="NSForestR")
+runNSFromPython(tsvfile, rfTrees=100L, threads=1L, Median_Expression_Level=0L, InformativeGenes=5L,
+                Genes_to_testing=3L, betaValue=0.5)
 }

@@ -88,6 +88,7 @@ genPredDF<-function(cutoffs, dataFull){
 #'@param clusterName numeric(1) cluster number
 #'@param betaValue numeric(1) value for beta weighting
 #'@param maxSymbol numeric(1) number of symbols to retain
+#'@dataDummy matrix dummy columns for one vs all Random Forest modeling
 #'@export
 fBetaTest<-function(predDF, clusterNum, betaValue,maxSymbol){
   require(MLmetrics)
@@ -140,18 +141,11 @@ NSForestCL <- function(file, clusterColumn, clusterValue, rfTrees, informativeGe
   medianValues=data.frame(mymeds)
   names(medianValues)=names(dataFull)[-cind]
   medianValues$cluster=mynames
-  
   res=runRandomForest(column=2, dataFull, dataDummy,  rfTrees=100, cind)
-  
   binres=binaryScore(res,informativeGenes=5, medianValues,column=2,nclust=8)
-  
   cuts=dtCutoff(binres,clusterCol = 2, dataDummy, dataFull)
-  
   preds=genPredDF(cuts, dataFull)
-  
-  fBetaTest(preds,2, .5, 3)
-  
-  
+  fBetaTest(preds,2, .5, 3, dataDummy)
 }
 
 

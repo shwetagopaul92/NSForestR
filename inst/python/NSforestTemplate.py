@@ -78,7 +78,7 @@ betaValue = 0.5 #Set values for fbeta weighting. 1 is default f-measure. close t
 
 
 #Function list
-
+#Code copied and adapted from https://github.com/JCVenterInstitute/NSForest
 
 def randomForest(column, dataDummy,PrecolNum,rfTrees,threads):
     x_train = dataDummy[list(dataDummy.columns[0:PrecolNum-1])]

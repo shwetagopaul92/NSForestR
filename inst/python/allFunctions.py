@@ -1,3 +1,5 @@
+#Code from https://github.com/JCVenterInstitute/NSForest
+
 #Necessary libraries
 
 import numpy as np
@@ -41,13 +43,13 @@ def negativeOut(x, column, medianValues,Median_Expression_Level):
     Positive_RankedList_Complete = []
     for i in x:
         if medianValues.loc[column, i] > Median_Expression_Level:
-            print i
-            print medianValues.loc[column, i]
+            print(i)
+            print(medianValues.loc[column, i])
             Positive_RankedList_Complete.append(i)
         else:
-            print i
-            print medianValues.loc[column, i]
-            print "Is Right Out!"
+            print(i)
+            print(medianValues.loc[column, i])
+            print("Is Right Out!")
     return Positive_RankedList_Complete
 
 def binaryScore(tsvfile,Binary_store_DF,Genes_to_testing,Ranked_Features,Positive_RankedList_Complete, InformativeGenes, medianValues, column):
@@ -113,7 +115,7 @@ def queryGenerator(x, cut_dict):
 def permutor(x):
     binarylist2 = x
     combs = []
-    for i in xrange(1, len(x)+1):
+    for i in range(1, len(x)+1):
         els = [list(x) for x in itertools.permutations(binarylist2, i)]
         combs.extend(els)
     return combs

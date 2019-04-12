@@ -1,3 +1,4 @@
+#Code from https://github.com/JCVenterInstitute/NSForest
 #Necessary libraries
 
 import numpy as np
@@ -6,7 +7,7 @@ import graphviz
 import numexpr
 import itertools
 import argparse
-import allFunctions
+#import allFunctions
 
 from subprocess import call
 from sklearn.ensemble import RandomForestClassifier
@@ -14,7 +15,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
 from sklearn.metrics import fbeta_score
 from sklearn.metrics import accuracy_score
-from allFunctions import *
+#from allFunctions import *
 
 def runNSForest(tsvfile, rfTrees, threads, Median_Expression_Level, InformativeGenes, Genes_to_testing, betaValue):
     dataFull = pd.read_table(tsvfile,index_col = 0)
@@ -104,24 +105,7 @@ def runNSForest(tsvfile, rfTrees, threads, Median_Expression_Level, InformativeG
     max_grouped.df=pd.DataFrame(max_grouped)
     max_grouped.df.to_csv('NSForest_v2_maxF-scores.csv')
 
-    NSForest_Results_Table_Fin["f-measureRank"] = NSForest_Results_Table_Fin.groupby(by="clusterName")["f-measure"].rank(ascending=False)
-    topResults = NSForest_Results_Table_Fin["f-measureRank"] < 50
-    NSForest_Results_Table_top = NSForest_Results_Table_Fin[topResults]
-    NSForest_Results_Table_top.to_csv('NSForest_v2_topResults.csv')
-
-def main():
-    #Pass parameters
-    parser = argparse.ArgumentParser(description='You can add a description here')
-    parser.add_argument('-fileName',type=str,help='filename')
-    parser.add_argument('-rfTrees',type=int,help='rfTrees number')
-    parser.add_argument('-threads',type=int,help='number of threads')
-    parser.add_argument('-Median_Expression_Level',type=int,help='Median_Expression_Level')
-    parser.add_argument('-InformativeGenes',type=int,help='InformativeGenes')
-    parser.add_argument('-Genes_to_testing',type=int,help='Genes_to_testing')
-    args = parser.parse_args()
-    print args.threads
-    runNSForest(args.fileName,args.rfTrees, args.threads, args.Median_Expression_Level, args.InformativeGenes, args.Genes_to_testing, betaValue=0.5)
-
-
-if __name__== "__main__":
-  main()
+    #NSForest_Results_Table_Fin["f-measureRank"] = NSForest_Results_Table_Fin.groupby(by="clusterName")["f-measure"].rank(ascending=False)
+    #topResults = NSForest_Results_Table_Fin["f-measureRank"] < 50
+    #NSForest_Results_Table_top = NSForest_Results_Table_Fin[topResults]
+    #NSForest_Results_Table_top.to_csv('NSForest_v2_topResults.csv')
