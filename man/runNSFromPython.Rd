@@ -27,6 +27,7 @@ to run NS Forest program from python
 }
 \examples{
 tsvfile = system.file("data/Ab10k.tsv", package="NSForestR")
-runNSFromPython(tsvfile, rfTrees=100L, threads=1L, Median_Expression_Level=0L, InformativeGenes=5L,
+res = runNSFromPython(tsvfile, rfTrees=100L, threads=1L, Median_Expression_Level=0L, InformativeGenes=5L,
                 Genes_to_testing=3L, betaValue=0.5)
+res
 }

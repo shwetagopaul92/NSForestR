@@ -1,5 +1,5 @@
+# Code from https://github.com/JCVenterInstitute/NSForest
 # coding: utf-8
-
 # # Demonstration of NSforest with 10X genomics PBMC 10k antibody capture data
 # 
 # This is a slight modification to the notebook published at https://github.com/JCVenterInstitute/NSForest to work with a specific dataset.  The file Ab10k.tsv is derived from the 10x [PBMC 10K expression plus protein dataset](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/pbmc_10k_protein_v3). 

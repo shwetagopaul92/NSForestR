@@ -1,4 +1,4 @@
-#Code copied and adapted from https://github.com/JCVenterInstitute/NSForest.
+# Code copied and adapted from https://github.com/JCVenterInstitute/NSForest.
 #' transform fixed template into program using user parameter settings
 #' @param assaytsv character(1) arbitrary name used for image of assay data in a tsv format as assumed by the NSforest python code
 #' @export

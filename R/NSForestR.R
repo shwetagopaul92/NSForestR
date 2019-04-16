@@ -4,7 +4,6 @@
 #'@param dataDummy matrix dummy columns for one vs all Random Forest modeling
 #'@param rfTrees numeric(1) number of trees
 #'@param cind integer index of "Clusters" column
-#'@export
 runRandomForest<-function(column, dataFull, dataDummy, rfTrees, cind=cind){
   require(randomForest)
   x_train=dataFull[,-cind]
@@ -20,7 +19,6 @@ runRandomForest<-function(column, dataFull, dataDummy, rfTrees, cind=cind){
 #'@param column numeric(1) column number 
 #'@param medianValues data.frame  cluster median expression values
 #'@param MedianExpressionLevel numeric(1) parameter for filtering and ranking genes
-#'@export
 negativeOut<-function(impDF, column, medianValues, MedianExpressionLevel){
   keep=sapply(rownames(impDF),function(x){
     medianValues[column,x]>MedianExpressionLevel
@@ -88,9 +86,8 @@ genPredDF<-function(cutoffs, dataFull){
 #'@param clusterName numeric(1) cluster number
 #'@param betaValue numeric(1) value for beta weighting
 #'@param maxSymbol numeric(1) number of symbols to retain
-#'@dataDummy matrix dummy columns for one vs all Random Forest modeling
-#'@export
-fBetaTest<-function(predDF, clusterNum, betaValue,maxSymbol){
+#'@param dataDummy matrix dummy columns for one vs all Random Forest modeling
+fBetaTest<-function(predDF, clusterNum, betaValue, maxSymbol, dataDummy){
   require(MLmetrics)
   predDF=predDF[,1:maxSymbol]
   mycols=1:ncol(predDF)
@@ -133,7 +130,6 @@ NSForestCL <- function(file, clusterColumn, clusterValue, rfTrees, informativeGe
   haslev1=as.numeric(as.character(dataFull$Clusters)==mylev1)
   dataDummy = cbind(haslev1,model.matrix(~Clusters, data=dataFull)[,-1])
   colnames(dataDummy)=as.character(levels(dataFull$Clusters))
-  #Creates matrix of cluster median expression values
   splitdat=split(dataFull,dataFull$Clusters)
   mymeds=lapply(splitdat,function(x){colMedians(as.matrix(x[,-cind]))})
   mynames=names(mymeds)
@@ -141,11 +137,11 @@ NSForestCL <- function(file, clusterColumn, clusterValue, rfTrees, informativeGe
   medianValues=data.frame(mymeds)
   names(medianValues)=names(dataFull)[-cind]
   medianValues$cluster=mynames
-  res=runRandomForest(column=2, dataFull, dataDummy,  rfTrees=100, cind)
-  binres=binaryScore(res,informativeGenes=5, medianValues,column=2,nclust=8)
-  cuts=dtCutoff(binres,clusterCol = 2, dataDummy, dataFull)
+  res=runRandomForest(column, dataFull, dataDummy,  rfTrees, cind)
+  binres=binaryScore(res, informativeGenes, medianValues, column, nclust=8)
+  cuts=dtCutoff(binres, clusterColumn, dataDummy, dataFull)
   preds=genPredDF(cuts, dataFull)
-  fBetaTest(preds,2, .5, 3, dataDummy)
+  fBetaTest(preds, 2, .5, 3, dataDummy)
 }
 
 

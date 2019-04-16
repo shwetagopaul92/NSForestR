@@ -4,7 +4,7 @@
 \alias{fBetaTest}
 \title{run fBeta test on prediction results}
 \usage{
-fBetaTest(predDF, clusterNum, betaValue, maxSymbol)
+fBetaTest(predDF, clusterNum, betaValue, maxSymbol, dataDummy)
 }
 \arguments{
 \item{predDF}{data.frame prediction results for each symbol}
@@ -12,6 +12,8 @@ fBetaTest(predDF, clusterNum, betaValue, maxSymbol)
 \item{betaValue}{numeric(1) value for beta weighting}
 
 \item{maxSymbol}{numeric(1) number of symbols to retain}
+
+\item{dataDummy}{matrix dummy columns for one vs all Random Forest modeling}
 
 \item{clusterName}{numeric(1) cluster number}
 }

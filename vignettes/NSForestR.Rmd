@@ -7,28 +7,52 @@ output: html_document
 
 # NSforest in R (via reticulate+python by Aevermann/Scheuermann et al.)
 
-- Our package NSForestR helps work with NS Forest implementation in R. 
+- Our package NSForestR helps work with NS Forest implementation
+from https://github.com/JCVenterInstitute/NSForestin in R. 
+
 - We have developed few methods to do this: 
 
 #NSforestR demo native R version of
 #https://github.com/JCVenterInstitute/NSForest
 
+- For illustration purposes, we have 
+Dataset : Ab10k.tsv -  17-feature dataset for 7k PBMC 
+
+The parameters are define as :
+rfTrees: number of trees built in random forest step
+threads: number of threads for python execution
+Median_Expression_Level: median expression level
+InformativeGenes: number of genes to regard as informative for each cluster
+Genes_to_testing: number of genes to retain in reporting
+betaValue: set values for fbeta weighting
+
 ```{r code2}
 library(NSForestR)
-result = runTest()
+tsvfile = system.file("data/Ab10k.tsv", package="NSForestR")
+chk = NSForestCL(tsvfile, clusterCol=2, clusterValue=2, rfTrees=100, informativeGene=5, num_top_ranked=3, betaValue=0.5, column=2)
+chk
 ```
 
-To run NS Forest program from python in R using 
+
+## Using "reticulate":
+
 ```{r code}
-r1 = runNSFromPython(Ab10k)
-r1
+
+tsvfile = system.file("data/Ab10k.tsv", package="NSForestR")
+runNSFromPython(tsvfile, rfTrees=100L, threads=1L, Median_Expression_Level=0L, InformativeGenes=5L,
+                Genes_to_testing=3L, betaValue=0.5)
 ```
 
 # Additional Methods 
 
-To transform a Single Cell Experiment object to tsv file : 
+- To transform a Single Cell Experiment object to tsv file 
 
 ```{r example}
-example("sceTotsv")
+
+data(pcmp::Ab10k)
+tf = tempfile(fileext=".tsv")
+sceTotsv(Ab10k,tf)
+head(read.delim(tf,sep="\t"))
+
 ```
 

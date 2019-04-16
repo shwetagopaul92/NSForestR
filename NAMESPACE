@@ -2,10 +2,7 @@
 
 export(NSForestCL)
 export(doSubs)
-export(fBetaTest)
 export(impMod)
-export(negativeOut)
 export(runNSForest)
 export(runNSFromPython)
-export(runRandomForest)
 export(sceTotsv)

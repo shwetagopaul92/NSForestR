@@ -10,8 +10,9 @@
 #' @param betaValue numeric(1) set values for fbeta weighting
 #' @examples 
 #' tsvfile = system.file("data/Ab10k.tsv", package="NSForestR")
-#' runNSFromPython(tsvfile, rfTrees=100L, threads=1L, Median_Expression_Level=0L, InformativeGenes=5L,
+#' res = runNSFromPython(tsvfile, rfTrees=100L, threads=1L, Median_Expression_Level=0L, InformativeGenes=5L,
 #'                 Genes_to_testing=3L, betaValue=0.5)
+#' res
 #' @export
 runNSFromPython <- function(tsvfile, rfTrees, threads, Median_Expression_Level, 
                             InformativeGenes, Genes_to_testing, betaValue) {
